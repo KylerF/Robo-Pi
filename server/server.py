@@ -410,7 +410,7 @@ wifi_status = 0
 def map_int(x, in_min, in_max, out_min, out_max):
     return int((x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min)
 
-# Get events from the gamepad and return the code/state
+# Get events from the gamepad
 def gamepad_thread():
     while 1:
         events = get_gamepad()
@@ -438,6 +438,11 @@ def gamepad_thread():
 def run():                   #Main loop
     global hoz_mid,vtr_mid,ip_con,led_status,auto_status,opencv_mode,findline_mode,speech_mode,auto_mode,data,addr,footage_socket,ap_status,turn_status,wifi_status
     led.setup()
+
+    # Start gamepad thread first
+    gamepad_threading=threading.Thread(target=gamepad_thread)
+    gamepad_threading.setDaemon(True)
+    gamepad_threading.start()
 
     while True:              #Connection
         try:
@@ -511,12 +516,7 @@ def run():                   #Main loop
 
     scan_threading=threading.Thread(target=dis_scan_thread)     #Define a thread for ultrasonic scan
     scan_threading.setDaemon(True)                              #'True' means it is a front thread,it would close when the mainloop() closes
-    scan_threading.start()                                      #Thread starts
-
-    gamepad_threading=threading.Thread(target=gamepad_thread)     #Define a thread for ultrasonic scan
-    gamepad_threading.setDaemon(True)                              #'True' means it is a front thread,it would close when the mainloop() closes
-    gamepad_threading.start()                                      #Thread starts
-
+    scan_threading.start()                                      #Thread starts 
 
     while True:
         data = ''

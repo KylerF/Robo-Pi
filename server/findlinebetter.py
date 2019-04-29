@@ -63,10 +63,29 @@ def setup():
 def print_status():
     print(GPIO.input(line_pin_right))
 
+def debug():
+    status_right = not GPIO.input(line_pin_right)
+    status_middle = not GPIO.input(line_pin_middle)
+    status_left = not GPIO.input(line_pin_left)
+    
+    if status_left == 1:
+        led.side_on(left_G)
+        led.side_off(right_G)
+    elif status_middle == 1:
+        led.side_on(left_G)
+        led.side_on(right_G)
+    elif status_right == 1:
+        led.side_on(right_G)
+        led.side_off(left_G)
+    else:
+        led.side_off(right_G)
+        led.side_off(left_G)
+      
 def run():
     status_right = not GPIO.input(line_pin_right)
     status_middle = not GPIO.input(line_pin_middle)
     status_left = not GPIO.input(line_pin_left)
+    
     if status_left == 1:
         turn.left()
         led.both_off()
@@ -98,12 +117,13 @@ def main():
 
     try:
         while True:
-            print_status()
-            run()
+            #run()
+            debug()
 
     except KeyboardInterrupt:
         motor.motorStop()
 
 
 if __name__ == "__main__":
-    main()
+   main()
+
